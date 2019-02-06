@@ -2,4 +2,4 @@
 
 <h2> Prerequisites </h2>  
 <p><b>Hardware</b>: NodeMCU </p>  
-<p><b>Software<b?: VS Code + PlatformIO IDE </p>
+<p><b>Software</b>: VS Code + PlatformIO IDE </p>
