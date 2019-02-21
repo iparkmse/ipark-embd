@@ -11,7 +11,7 @@ assignees: ''
 - statement1  
 - statement2  
 
-## :ticket: Accepted sriterias  
+## :ticket: Accepted criteria  
 - AC1  
 - AC2  
 
