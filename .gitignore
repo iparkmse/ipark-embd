@@ -6,3 +6,19 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/settings.json
+
+# python
+.tmp
+.*.swp
+*.pyc
+MANIFEST
+README.html
+__pycache__/
+.tox/
+build/
+dist/
+htmlcov/
+*.egg*/
+.coverage
+.travis-solo/
+tags
