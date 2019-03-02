@@ -11,15 +11,14 @@
 #include <FirebaseHttpClient.h>
 #include <FirebaseObject.h>
 
-#define FIREBASE_HOST "my-test1-0123.firebaseio.com"
-#define FIREBASE_AUTH "Lzzd3o6bTR0o59CtImDzm4MAULRJsnWwNlpzGDqu" //contains secret, needs not to be hardcoded in the future
+#define FIREBASE_HOST "ipark-2997b.firebaseio.com"
+#define FIREBASE_AUTH "xxx" //contains secret, needs not to be hardcoded in the future
 
 // Replace these with your WiFi network settings
-const char* ssid = "Firda's iPhone"; //replace this with WiFi network name
-const char* password = "firda0303"; //replace this with WiFi network password
+const char* ssid = "xxx"; //replace this with WiFi network name
+const char* password = "xxx"; //replace this with WiFi network password
 
-void setup()
-{
+void setup(){
   delay(1000);
   Serial.begin(9600); // baud rate 9600 or 115200, depending on the firmware
 
@@ -44,34 +43,29 @@ void setup()
 void loop() {
   // Check WiFi Status
   if (WiFi.status() == WL_CONNECTED) {
-    // get value
-    Serial.print("Stall 1 status:");
-    String stall_status1 = Firebase.getString("stall1/status/");
-    Serial.println(stall_status1);
-
-    if (stall_status1="available"){
-      Serial.println("Available for reservation");
-      Firebase.setString("stall1/reservation/","yes");
-    }
-    else{
-      Serial.println("Stall is busy");
-      Firebase.setString("stall1/reservation/","no");
-    }
-
-    Serial.print("Stall 2 status:");
-    String stall_status2 = Firebase.getString("stall2/status/");
-    Serial.println(stall_status2);
-
-    if (stall_status2="available"){
-      Serial.print("Available for reservation");
-      Firebase.setString("stall2/reservation/","yes");
-    }
-    else{
-      Serial.print("Stall is busy");
-      Firebase.setString("stall2/reservation/","no");
-    }
+    //Jack's code should reside inside here while using the function readingData or writingData.
 
   }
   // Delay
   delay(3000); //fetching data from firebase every 3 seconds
+}
+
+void readingData(String stallNumber){
+  // Reading stall status
+  String stall_status = Firebase.getString(stallNumber + "/status/");
+  Serial.println("Stall status is " + stall_status);
+
+}
+
+void writingData(String stallNumber , String status){
+  // Writing stall status
+  if (status="occupied"){
+    Serial.print("Available for reservation ");
+    Firebase.setString("stall/"+stallNumber+"/status/",status);
+  }
+  else if(status="vacant"){
+    Serial.print("Stall number "+stallNumber);
+    Firebase.setString("stall/"+stallNumber+"/status/",status);
+  }
+
 }
