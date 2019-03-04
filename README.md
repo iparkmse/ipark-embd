@@ -1,4 +1,7 @@
-<h1> ipark-embd </h1>
+<h1> 
+    ipark-embd &middot;
+    <a href="https://travis-ci.com/iparkmse/ipark-embd"><img src="https://travis-ci.com/iparkmse/ipark-embd.svg?branch=master" alt="build status"></a>
+</h1>
 
 <h2> Prerequisites </h2>  
 <p><b>Hardware</b>: NodeMCU </p>  
