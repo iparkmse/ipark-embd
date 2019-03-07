@@ -10,10 +10,10 @@ cache:
 install:
     - pip install -U platformio
     - pip install cpplint
-    - pip install cppclean
+    - sudo apt-get install cppcheck
     - platformio update
 
 script:
     - platformio run
     - cpplint src/*.cpp
-    - cppclean src/*.cpp
+    - cppcheck --enable=style src/*.cpp
