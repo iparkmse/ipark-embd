@@ -1,12 +1,3 @@
----
-name: PR tempalte
-about: template for pull request
-title: ''
-labels: ''
-assignees: ''
-
----
-
 ## :rocket: What does this PR implement/fix?  
 - statement1  
 
