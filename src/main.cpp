@@ -35,8 +35,8 @@ void setup() {
 
 String readingData(String stallNumber) {
   // Reading stall status
-  String stall_status = Firebase.getString("stalls/"+ stallNumber + "/status/");
-  return stall_status;
+  String stallStatus = Firebase.getString("stalls/"+ stallNumber + "/status/");
+  return stallStatus;
 }
 
 void writingData(String stallNumber, String status) {
