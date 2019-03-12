@@ -41,10 +41,10 @@ String readingData(String stallNumber) {
 
 void writingData(String stallNumber, String status) {
   // Writing stall status
-  if (status = "occupied") {
+  if (status == "occupied") {
     Serial.print("Available for reservation ");
     Firebase.setString("stalls/"+stallNumber+"/status/", status);
-  } else if (status = "vacant") {
+  } else if (status == "vacant") {
     Serial.print("Stall number "+stallNumber);
     Firebase.setString("stalls/"+stallNumber+"/status/", status);
   }
