@@ -12,12 +12,12 @@ int latchPin = 12; //D6
  
 
 // defines variables
-int min_distance = 0; // minimum sensing distance
-int max_distance = 5; // dmaximum sensing distance
+int minDistance = 0; // minimum sensing distance
+int maxDistance = 5; // maximum sensing distance
 
 int distance[4];
 
-uint8_t led_pattern = 0x00;
+uint8_t ledPattern = 0x00;
 
 uint8_t trigPin1 = 0x10; // pin 4 on shift register
 uint8_t trigPin2 = 0x20; // pin 5 on shift register
@@ -31,7 +31,7 @@ void setup() {
   pinMode(echoPin3, INPUT); // Sets the echoPin as an Input
   pinMode(echoPin4, INPUT); // Sets the echoPin as an Input
 
-  // Led Shift register
+  // Shift register
   pinMode(clockPin, OUTPUT); // Sets the cloPin as an Output
   pinMode(dataPin, OUTPUT); // Sets the trigPin as an Output
   pinMode(latchPin, OUTPUT); // Sets the trigPin as an Output
@@ -40,10 +40,11 @@ void setup() {
 }
 
 void loop() {
-  distance[0] = ultra_sensing(trigPin1, echoPin1);
-  distance[1] = ultra_sensing(trigPin2, echoPin2);
-  distance[2] = ultra_sensing(trigPin3, echoPin3);
-  distance[3] = ultra_sensing(trigPin4, echoPin4);
+  // read data from ultrasonic sensors
+  distance[0] = ultraSensing(trigPin1, echoPin1);
+  distance[1] = ultraSensing(trigPin2, echoPin2);
+  distance[2] = ultraSensing(trigPin3, echoPin3);
+  distance[3] = ultraSensing(trigPin4, echoPin4);
 
   // Prints the distance on the Serial Monitor
   Serial.print("Distance1: ");
@@ -55,31 +56,30 @@ void loop() {
   Serial.print("Distance4: ");
   Serial.println(distance[3]);
 
+  // setup led pattern from led to change colour
   int i;
-  led_pattern = 0x00;
-  for (i = 0; i < 4; i = i + 1){
-    int led = turn_led_red(distance[i], i);
-    led_pattern = led_pattern + led;
+  ledPattern = 0x00;
+  for (i = 0; i < 4; i = i + 1) {
+    int led = turnLedRed(distance[i], i);
+    ledPattern = ledPattern + led;
   }
 
-  shift_out_data(led_pattern);
+  // send led pattern to shift register
+  shiftOutData(ledPattern);
   
-  delay(500);
+  delay(100);
 }
 
-int ultra_sensing(int trigPin, int echoPin)
-{
+int ultraSensing(int trigPin, int echoPin) {
+  // function to calculate distance from ultrasonic sensor's reading
   // Clears the trigPin
-//  digitalWrite(trigPin, LOW);
-  shift_out_data(led_pattern);
+  shiftOutData(ledPattern);
   delayMicroseconds(2);
 
   // Sets the trigPin on HIGH state for 10 micro seconds
-//  digitalWrite(trigPin, HIGH);
-  shift_out_data(led_pattern+trigPin);
+  shiftOutData(ledPattern+trigPin);
   delayMicroseconds(10);
-//  digitalWrite(trigPin, LOW);
-  shift_out_data(led_pattern);
+  shiftOutData(ledPattern);
 
   // Reads the echoPin, returns the sound wave travel time in microseconds
   long duration = pulseIn(echoPin, HIGH);
@@ -89,19 +89,18 @@ int ultra_sensing(int trigPin, int echoPin)
   return distance;
 }
 
-void shift_out_data(int data_pattern)
-{
+void shiftOutData(int dataPattern) {
+  // function to output data pattern from shift register
   digitalWrite(latchPin, LOW);
-  shiftOut(dataPin, clockPin, MSBFIRST, data_pattern);
+  shiftOut(dataPin, clockPin, MSBFIRST, dataPattern);
   digitalWrite(latchPin, HIGH); 
 }
 
-uint8_t turn_led_red(int distance, int n)
-{
-  uint8_t led_red = 0x00;
-  if (distance > min_distance and distance < max_distance) {
-    led_red = pow(2,n); // turn led to red 
+uint8_t turnLedRed(int distance, int n) {
+  // function to turn led colour to red
+  uint8_t ledRed = 0x00;
+  if (distance > minDistance and distance < maxDistance) {
+    ledRed = pow(2,n); // turn led to red 
   }
-  return led_red;
+  return ledRed;
 }
-
