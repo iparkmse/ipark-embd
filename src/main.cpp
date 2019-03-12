@@ -12,11 +12,11 @@
 #include <FirebaseObject.h>
 
 #define FIREBASE_HOST "ipark-2997b.firebaseio.com"
-#define FIREBASE_AUTH "xxx"  // Contains secret
+#define FIREBASE_AUTH "Co5YN6t9oKLCi6LKrJhCt5QAdkeqtKh1phDejTmL"  // Contains secret
 
 // Replace these with your WiFi network settings
-const char* ssid = "xxx";  // Replace this with WiFi network name
-const char* password = "xxx";  // Replace this with WiFi network password
+const char* ssid = "Firda's iPhone";  // Replace this with WiFi network name
+const char* password = "firda0303";  // Replace this with WiFi network password
 
 void setup() {
   delay(1000);
@@ -39,28 +39,30 @@ void setup() {
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 }
 
-void loop() {
-  // Check WiFi Status
-  if (WiFi.status() == WL_CONNECTED) {
-    // Jack's code should reside inside here while using the function.
-  }
-  // Delay
-  delay(3000);  // Fetching data from firebase every 3 seconds
-}
-
-void readingData(String stallNumber) {
+String readingData(String stallNumber) {
   // Reading stall status
-  String stall_status = Firebase.getString(stallNumber + "/status/");
-  Serial.println("Stall status is " + stall_status);
+  String stall_status = Firebase.getString("stalls/"+ stallNumber + "/status/");
+  return stall_status;
 }
 
 void writingData(String stallNumber, String status) {
   // Writing stall status
   if (status = "occupied") {
     Serial.print("Available for reservation ");
-    Firebase.setString("stall/"+stallNumber+"/status/", status);
+    Firebase.setString("stalls/"+stallNumber+"/status/", status);
   } else if (status = "vacant") {
     Serial.print("Stall number "+stallNumber);
-    Firebase.setString("stall/"+stallNumber+"/status/", status);
+    Firebase.setString("stalls/"+stallNumber+"/status/", status);
   }
+}
+
+void loop() {
+  // Check WiFi Status
+  if (WiFi.status() == WL_CONNECTED) {
+    String status = readingData("stallA1");
+    Serial.println("Stall 1 status: " + status);
+    // Jack's code should reside inside here while using the function.
+  }
+  // Delay
+  delay(3000);  // Fetching data from firebase every 3 seconds
 }
