@@ -21,4 +21,8 @@ htmlcov/
 *.egg*/
 .coverage
 .travis-solo/
-tags
+
+.DS_Store
+.clang_complete
+.gcc-flags.json
+include/FirebaseCred.h
