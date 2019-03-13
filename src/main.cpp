@@ -1,3 +1,17 @@
+#include <Arduino.h>
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
+#include <ArduinoJson.h>
+
+// Include firebase library
+#include <Firebase.h>
+#include <FirebaseArduino.h>
+#include <FirebaseCloudMessaging.h>
+#include <FirebaseError.h>
+#include <FirebaseHttpClient.h>
+#include <FirebaseObject.h>
+#include "FirebaseCred.h"
+
 // defines pins numbers
 // for ultrasonic sensors
 const int echoPin1 = 0;  //D3
@@ -16,6 +30,7 @@ int minDistance = 0; // minimum sensing distance
 int maxDistance = 5; // maximum sensing distance
 
 int distance[4];
+String databaseLed[] = {"StallA1", "StallA2", "StallB1", "StallB2"};
 
 uint8_t ledPattern = 0x00;
 
@@ -25,7 +40,7 @@ uint8_t trigPin3 = 0x40; // pin 6 on shift register
 uint8_t trigPin4 = 0x80; // pin 7 on shift register
 
 void setup() {
-  // Ultrasonic sensors
+    // Ultrasonic sensors
   pinMode(echoPin1, INPUT); // Sets the echoPin as an Input
   pinMode(echoPin2, INPUT); // Sets the echoPin as an Input
   pinMode(echoPin3, INPUT); // Sets the echoPin as an Input
@@ -36,10 +51,80 @@ void setup() {
   pinMode(dataPin, OUTPUT); // Sets the trigPin as an Output
   pinMode(latchPin, OUTPUT); // Sets the trigPin as an Output
   
-  Serial.begin(9600); // Starts the serial communication
+  delay(1000);
+  Serial.begin(9600);  // Baud rate 9600 or 115200, depending on the firmware
+
+  WiFi.begin(ssid, password);
+
+  Serial.println();
+  Serial.print("Connecting");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("success!");
+  Serial.print("IP Address is: ");
+  Serial.println(WiFi.localIP());
+
+  // Firebase initialization
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 }
 
-void loop() {
+String readingData(String stallNumber) {
+  // Reading stall status
+  String stallStatus = Firebase.getString("stalls/"+ stallNumber + "/status/");
+  return stallStatus;
+}
+
+void writingData(String stallNumber, String status) {
+  // Writing stall status
+    Firebase.setString("stalls/"+stallNumber+"/status/", status);
+    Serial.print("Updating "+stallNumber+" to "+status);
+}
+
+void shiftOutData(int dataPattern) {
+  // function to output data pattern from shift register
+  digitalWrite(latchPin, LOW);
+  shiftOut(dataPin, clockPin, MSBFIRST, dataPattern);
+  digitalWrite(latchPin, HIGH); 
+}
+
+int ultraSensing(int trigPin, int echoPin) {
+  // function to calculate distance from ultrasonic sensor's reading
+  // Clears the trigPin
+  shiftOutData(ledPattern);
+  delayMicroseconds(2);
+
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  shiftOutData(ledPattern+trigPin);
+  delayMicroseconds(10);
+  shiftOutData(ledPattern);
+
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  long duration = pulseIn(echoPin, HIGH);
+
+  // Calculating the distance
+  int distance = duration * 0.034 / 2;
+  return distance;
+}
+
+uint8_t turnLedRed(int distance, int n) {
+  // function to turn led colour to red
+  uint8_t ledRed = 0x00;
+  if (distance > minDistance and distance < maxDistance) {
+    ledRed = pow(2,n); // turn led to red 
+    if (readingData(databaseLed[n])=="vacant") {
+      writingData(databaseLed[n], "occupied");
+    }
+  }
+  else if (distance > maxDistance and readingData(databaseLed[n])=="occupied") {
+    writingData(databaseLed[n], "vacant");
+  }
+  return ledRed;
+}
+
+void sensor_led_interfaces() {
   // read data from ultrasonic sensors
   distance[0] = ultraSensing(trigPin1, echoPin1);
   distance[1] = ultraSensing(trigPin2, echoPin2);
@@ -70,37 +155,12 @@ void loop() {
   delay(100);
 }
 
-int ultraSensing(int trigPin, int echoPin) {
-  // function to calculate distance from ultrasonic sensor's reading
-  // Clears the trigPin
-  shiftOutData(ledPattern);
-  delayMicroseconds(2);
+void loop() {
+  // Check WiFi Status
+  if (WiFi.status() == WL_CONNECTED) {
+    sensor_led_interfaces();
 
-  // Sets the trigPin on HIGH state for 10 micro seconds
-  shiftOutData(ledPattern+trigPin);
-  delayMicroseconds(10);
-  shiftOutData(ledPattern);
-
-  // Reads the echoPin, returns the sound wave travel time in microseconds
-  long duration = pulseIn(echoPin, HIGH);
-
-  // Calculating the distance
-  int distance = duration * 0.034 / 2;
-  return distance;
-}
-
-void shiftOutData(int dataPattern) {
-  // function to output data pattern from shift register
-  digitalWrite(latchPin, LOW);
-  shiftOut(dataPin, clockPin, MSBFIRST, dataPattern);
-  digitalWrite(latchPin, HIGH); 
-}
-
-uint8_t turnLedRed(int distance, int n) {
-  // function to turn led colour to red
-  uint8_t ledRed = 0x00;
-  if (distance > minDistance and distance < maxDistance) {
-    ledRed = pow(2,n); // turn led to red 
   }
-  return ledRed;
+  // Delay
+  delay(1000);  // Fetching data from firebase every 3 seconds
 }
