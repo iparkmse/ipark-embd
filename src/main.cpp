@@ -30,7 +30,7 @@ int minDistance = 0; // minimum sensing distance
 int maxDistance = 5; // maximum sensing distance
 
 int distance[4];
-String databaseLed[] = {"StallA1", "StallA2", "StallB1", "StallB2"};
+String databaseLed[] = {"stallA1", "stallA2", "stallB1", "stallB2"};
 
 uint8_t ledPattern = 0x00;
 
@@ -74,6 +74,7 @@ void setup() {
 String readingData(String stallNumber) {
   // Reading stall status
   String stallStatus = Firebase.getString("stalls/"+ stallNumber + "/status/");
+  Serial.println("The status of "+ stallNumber + "is "+ stallStatus);
   return stallStatus;
 }
 
@@ -115,6 +116,7 @@ uint8_t turnLedRed(int distance, int n) {
   if (distance > minDistance and distance < maxDistance) {
     ledRed = pow(2,n); // turn led to red 
     if (readingData(databaseLed[n])=="vacant") {
+      Serial.print("hi");
       writingData(databaseLed[n], "occupied");
     }
   }
