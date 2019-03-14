@@ -14,43 +14,42 @@
 
 // defines pins numbers
 // for ultrasonic sensors
-const int echoPin1 = 0;  //D3
-const int echoPin2 = 5;  //D1
-const int echoPin3 = 2;  //D4
-const int echoPin4 = 4;  //D2
+const short echoPin1 = 0;  // D3
+const short echoPin2 = 5;  // D1
+const short echoPin3 = 2;  // D4
+const short echoPin4 = 4;  // D2
 
 // for Led shift register
-int clockPin = 14; //D5
-int dataPin = 13;  //D7
-int latchPin = 12; //D6
- 
+short clockPin = 14;  // D5
+short dataPin = 13;   // D7
+short latchPin = 12;  // D6
 
 // defines variables
-int minDistance = 0; // minimum sensing distance
-int maxDistance = 5; // maximum sensing distance
+short minDistance = 0;  // minimum sensing distance
+short maxDistance = 5;  // maximum sensing distance
 
 int distance[4];
 String databaseLed[] = {"stallA1", "stallA2", "stallB1", "stallB2"};
 
 uint8_t ledPattern = 0x00;
 
-uint8_t trigPin1 = 0x10; // pin 4 on shift register
-uint8_t trigPin2 = 0x20; // pin 5 on shift register
-uint8_t trigPin3 = 0x40; // pin 6 on shift register
-uint8_t trigPin4 = 0x80; // pin 7 on shift register
+uint8_t trigPin1 = 0x10;  // pin 4 on shift register
+uint8_t trigPin2 = 0x20;  // pin 5 on shift register
+uint8_t trigPin3 = 0x40;  // pin 6 on shift register
+uint8_t trigPin4 = 0x80;  // pin 7 on shift register
 
 void setup() {
     // Ultrasonic sensors
-  pinMode(echoPin1, INPUT); // Sets the echoPin as an Input
-  pinMode(echoPin2, INPUT); // Sets the echoPin as an Input
-  pinMode(echoPin3, INPUT); // Sets the echoPin as an Input
-  pinMode(echoPin4, INPUT); // Sets the echoPin as an Input
+  pinMode(echoPin1, INPUT);  // Sets the echoPin as an Input
+  pinMode(echoPin2, INPUT);  // Sets the echoPin as an Input
+  pinMode(echoPin3, INPUT);  // Sets the echoPin as an Input
+  pinMode(echoPin4, INPUT);  // Sets the echoPin as an Input
 
   // Shift register
-  pinMode(clockPin, OUTPUT); // Sets the cloPin as an Output
-  pinMode(dataPin, OUTPUT); // Sets the trigPin as an Output
-  pinMode(latchPin, OUTPUT); // Sets the trigPin as an Output
-  
+  pinMode(clockPin, OUTPUT);  // Sets the cloPin as an Output
+  pinMode(dataPin, OUTPUT);  // Sets the trigPin as an Output
+  pinMode(latchPin, OUTPUT);  // Sets the trigPin as an Output
+
   delay(1000);
   Serial.begin(9600);  // Baud rate 9600 or 115200, depending on the firmware
 
@@ -88,7 +87,7 @@ void shiftOutData(int dataPattern) {
   // function to output data pattern from shift register
   digitalWrite(latchPin, LOW);
   shiftOut(dataPin, clockPin, MSBFIRST, dataPattern);
-  digitalWrite(latchPin, HIGH); 
+  digitalWrite(latchPin, HIGH);
 }
 
 int ultraSensing(int trigPin, int echoPin) {
@@ -103,7 +102,7 @@ int ultraSensing(int trigPin, int echoPin) {
   shiftOutData(ledPattern);
 
   // Reads the echoPin, returns the sound wave travel time in microseconds
-  long duration = pulseIn(echoPin, HIGH);
+  uint32_t duration = pulseIn(echoPin, HIGH);
 
   // Calculating the distance
   int distance = duration * 0.034 / 2;
@@ -113,14 +112,13 @@ int ultraSensing(int trigPin, int echoPin) {
 uint8_t turnLedRed(int distance, int n) {
   // function to turn led colour to red
   uint8_t ledRed = 0x00;
-  if (distance > minDistance and distance < maxDistance) {
-    ledRed = pow(2,n); // turn led to red 
-    if (readingData(databaseLed[n])=="vacant") {
-      Serial.print("hi");
+  if (distance > minDistance && distance < maxDistance) {
+    ledRed = pow(2, n);  // turn led to red
+    if (readingData(databaseLed[n]) == "vacant") {
       writingData(databaseLed[n], "occupied");
     }
   }
-  else if (distance > maxDistance and readingData(databaseLed[n])=="occupied") {
+  else if (distance > maxDistance && readingData(databaseLed[n]) == "occupied") {
     writingData(databaseLed[n], "vacant");
   }
   return ledRed;
@@ -164,5 +162,5 @@ void loop() {
 
   }
   // Delay
-  delay(1000);  // Fetching data from firebase every 3 seconds
+  delay(100);  // Fetching data from firebase every 3 seconds
 }
