@@ -39,7 +39,7 @@ uint8_t trigPin3 = 0x40;  // pin 6 on shift register
 uint8_t trigPin4 = 0x80;  // pin 7 on shift register
 
 void setup() {
-    // Ultrasonic sensors
+  // Ultrasonic sensors
   pinMode(echoPin1, INPUT);  // Sets the echoPin as an Input
   pinMode(echoPin2, INPUT);  // Sets the echoPin as an Input
   pinMode(echoPin3, INPUT);  // Sets the echoPin as an Input
@@ -72,15 +72,15 @@ void setup() {
 
 String readingData(String stallNumber) {
   // Reading stall status
-  String stallStatus = Firebase.getString("stalls/"+ stallNumber + "/status/");
-  Serial.println("The status of "+ stallNumber + "is "+ stallStatus);
+  String stallStatus = Firebase.getString("stalls/" + stallNumber + "/status/");
+  Serial.println("The status of " + stallNumber + "is " + stallStatus);
   return stallStatus;
 }
 
 void writingData(String stallNumber, String status) {
   // Writing stall status
-    Firebase.setString("stalls/"+stallNumber+"/status/", status);
-    Serial.print("Updating "+stallNumber+" to "+status);
+  Firebase.setString("stalls/" + stallNumber + "/status/", status);
+  Serial.print("Updating " + stallNumber + " to " + status);
 }
 
 void shiftOutData(int dataPattern) {
@@ -97,7 +97,7 @@ int ultraSensing(int trigPin, int echoPin) {
   delayMicroseconds(2);
 
   // Sets the trigPin on HIGH state for 10 micro seconds
-  shiftOutData(ledPattern+trigPin);
+  shiftOutData(ledPattern + trigPin);
   delayMicroseconds(10);
   shiftOutData(ledPattern);
 
@@ -158,6 +158,5 @@ void loop() {
     sensorLedInterfaces();
   }
 
-  // Delay
   delay(100);  // Fetching data from firebase every 0.1 seconds
 }
