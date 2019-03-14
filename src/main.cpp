@@ -124,7 +124,7 @@ uint8_t turnLedRed(int distance, int n) {
   return ledRed;
 }
 
-void sensor_led_interfaces() {
+void sensorLedInterfaces() {
   // read data from ultrasonic sensors
   distance[0] = ultraSensing(trigPin1, echoPin1);
   distance[1] = ultraSensing(trigPin2, echoPin2);
@@ -142,9 +142,8 @@ void sensor_led_interfaces() {
   Serial.println(distance[3]);
 
   // setup led pattern from led to change colour
-  int i;
   ledPattern = 0x00;
-  for (i = 0; i < 4; i = i + 1) {
+  for (int i = 0; i < 4; i++) {
     int led = turnLedRed(distance[i], i);
     ledPattern = ledPattern + led;
   }
@@ -156,9 +155,9 @@ void sensor_led_interfaces() {
 void loop() {
   // Check WiFi Status
   if (WiFi.status() == WL_CONNECTED) {
-    sensor_led_interfaces();
+    sensorLedInterfaces();
   }
 
   // Delay
-  delay(100);  // Fetching data from firebase every 3 seconds
+  delay(100);  // Fetching data from firebase every 0.1 seconds
 }
