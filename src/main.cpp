@@ -14,19 +14,19 @@
 
 // defines pins numbers
 // for ultrasonic sensors
-const short echoPin1 = 0;  // D3
-const short echoPin2 = 5;  // D1
-const short echoPin3 = 2;  // D4
-const short echoPin4 = 4;  // D2
+const uint8_t echoPin1 = 0;  // D3
+const uint8_t echoPin2 = 5;  // D1
+const uint8_t echoPin3 = 2;  // D4
+const uint8_t echoPin4 = 4;  // D2
 
 // for Led shift register
-short clockPin = 14;  // D5
-short dataPin = 13;   // D7
-short latchPin = 12;  // D6
+uint8_t clockPin = 14;  // D5
+uint8_t dataPin = 13;   // D7
+uint8_t latchPin = 12;  // D6
 
 // defines variables
-short minDistance = 0;  // minimum sensing distance
-short maxDistance = 5;  // maximum sensing distance
+uint8_t minDistance = 0;  // minimum sensing distance
+uint8_t maxDistance = 5;  // maximum sensing distance
 
 int distance[4];
 String databaseLed[] = {"stallA1", "stallA2", "stallB1", "stallB2"};
