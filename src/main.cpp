@@ -31,7 +31,7 @@ uint8_t maxDistance = 5;  // maximum sensing distance
 int distance[4];
 String databaseLed[] = {"stallA1", "stallA2", "stallB1", "stallB2"};
 
-uint8_t ledPattern = 0x00;
+int ledPattern = 0x00;
 
 uint8_t trigPin1 = 0x10;  // pin 4 on shift register
 uint8_t trigPin2 = 0x20;  // pin 5 on shift register
@@ -143,8 +143,8 @@ void sensorLedInterfaces() {
 
   // setup led pattern from led to change colour
   ledPattern = 0x00;
-  for (int i = 0; i < 4; i++) {
-    int led = turnLedRed(distance[i], i);
+  for (uint8_t i = 0; i < 4; i++) {
+    uint8_t led = turnLedRed(distance[i], i);
     ledPattern = ledPattern + led;
   }
 
