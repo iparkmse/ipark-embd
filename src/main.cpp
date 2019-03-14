@@ -118,8 +118,7 @@ uint8_t turnLedRed(int distance, int n) {
     if (status == "vacant") {
       writingData(databaseLed[n], "occupied");
     }
-  }
-  else if (distance > maxDistance && status == "occupied") {
+  } else if (distance > maxDistance && status == "occupied") {
     writingData(databaseLed[n], "vacant");
   }
   return ledRed;
