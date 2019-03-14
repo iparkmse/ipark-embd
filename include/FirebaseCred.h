@@ -1,4 +1,4 @@
-#define FIREBASE_HOST "xxx"
+#define FIREBASE_HOST "ipark-2997b.firebaseio.com"
 #define FIREBASE_AUTH "xxx"  // Contains secret
 
 // Replace these with your WiFi network settings

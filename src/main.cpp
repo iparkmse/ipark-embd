@@ -112,13 +112,14 @@ int ultraSensing(int trigPin, int echoPin) {
 uint8_t turnLedRed(int distance, int n) {
   // function to turn led colour to red
   uint8_t ledRed = 0x00;
+  String status = readingData(databaseLed[n]);
   if (distance > minDistance && distance < maxDistance) {
     ledRed = pow(2, n);  // turn led to red
-    if (readingData(databaseLed[n]) == "vacant") {
+    if (status == "vacant") {
       writingData(databaseLed[n], "occupied");
     }
   }
-  else if (distance > maxDistance && readingData(databaseLed[n]) == "occupied") {
+  else if (distance > maxDistance && status == "occupied") {
     writingData(databaseLed[n], "vacant");
   }
   return ledRed;
@@ -151,16 +152,14 @@ void sensor_led_interfaces() {
 
   // send led pattern to shift register
   shiftOutData(ledPattern);
-  
-  delay(100);
 }
 
 void loop() {
   // Check WiFi Status
   if (WiFi.status() == WL_CONNECTED) {
     sensor_led_interfaces();
-
   }
+
   // Delay
   delay(100);  // Fetching data from firebase every 3 seconds
 }
