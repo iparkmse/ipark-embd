@@ -31,7 +31,7 @@ uint8_t maxDistance = 5;  // maximum sensing distance
 int distance[4];
 String databaseLed[] = {"stallA1", "stallA2", "stallB1", "stallB2"};
 
-int ledPattern = 0x00;
+uint8_t ledPattern = 0x00;
 
 uint8_t trigPin1 = 0x10;  // pin 4 on shift register
 uint8_t trigPin2 = 0x20;  // pin 5 on shift register
