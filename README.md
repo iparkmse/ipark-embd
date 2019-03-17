@@ -15,7 +15,7 @@
 <h2> Features </h2>
 <ul>
   <li>Real time parking data tracking</li>
-  <li>Responsive and user friendly UI</li>
+  <li>Responsive and user-friendly UI</li>
   <li>User login and management system</li>
   <li>Parking lot status viewer</li>
   <li>Parking stall reservation</li>
