@@ -5,7 +5,7 @@
 <p>
     <a href="https://travis-ci.com/iparkmse/ipark-embd"><img src="https://travis-ci.com/iparkmse/ipark-embd.svg?branch=master" alt="build status"></a>
 </p>
-<p>iPark is a modern solution of resolving the time-consuming parking problems. Our team presents an IoT and full-stack web app system that immensely cuts down the time and effort needed when it comes to parking. </p>
+<p>iPark is a modern solution for the time-consuming parking problems. Our team presents an IoT and full-stack web app system that immensely cuts down the time and effort needed when it comes to parking. </p>
 
 <h2> Prerequisites </h2>  
 <p><b>Hardware</b>: NodeMCU </p>  
