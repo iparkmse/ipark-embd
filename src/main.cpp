@@ -156,8 +156,7 @@ void loop() {
   // Check WiFi Status
   if (WiFi.status() == WL_CONNECTED) {
     sensorLedInterfaces();
-  }
-  else if (WiFi.status() == WL_CONNECTION_LOST || WiFi.status() == WL_DISCONNECTED){
+  } else if (WiFi.status() == WL_CONNECTION_LOST || WiFi.status() == WL_DISCONNECTED){
     Serial.println(" WiFi connection is lost, reconnecting");
     ESP.restart();
   }
