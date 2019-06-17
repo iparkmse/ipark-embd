@@ -56,7 +56,7 @@ void setup() {
   WiFi.begin(ssid, password);
 
   Serial.println();
-  Serial.print("Connecting");
+  Serial.println("Connecting");
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -157,6 +157,9 @@ void loop() {
   if (WiFi.status() == WL_CONNECTED) {
     sensorLedInterfaces();
   }
-
+  else if (WiFi.status() == WL_CONNECTION_LOST || WiFi.status() == WL_DISCONNECTED){
+    Serial.println(" WiFi connection is lost, reconnecting");
+    ESP.restart();
+  }
   delay(100);  // Fetching data from firebase every 0.1 seconds
 }
