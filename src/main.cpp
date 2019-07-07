@@ -12,6 +12,9 @@
 #include <FirebaseObject.h>
 #include "FirebaseCred.h"
 
+// Include time library
+#include <Time.h>
+
 // defines pins numbers
 // for ultrasonic sensors
 const uint8_t echoPin1 = 0;  // D3
@@ -56,7 +59,7 @@ void setup() {
   WiFi.begin(ssid, password);
 
   Serial.println();
-  Serial.print("Connecting");
+  Serial.println("Connecting");
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -154,9 +157,15 @@ void sensorLedInterfaces() {
 
 void loop() {
   // Check WiFi Status
+
   if (WiFi.status() == WL_CONNECTED) {
     sensorLedInterfaces();
+  } else if (WiFi.status() == WL_CONNECTION_LOST) {
+    Serial.println(" WiFi connection is lost, reconnecting...");
+    ESP.restart();
+  } else if (WiFi.status() == WL_DISCONNECTED) {
+    Serial.println(" Wifi connection is disconnected, retrying....");
+    ESP.restart();
   }
-
   delay(100);  // Fetching data from firebase every 0.1 seconds
 }
