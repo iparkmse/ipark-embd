@@ -69,6 +69,14 @@ void setup() {
   Serial.print("IP Address is: ");
   Serial.println(WiFi.localIP());
 
+  // Configure time to meet PDT Timezone
+  configTime(-7 * 3600, 0, "pool.ntp.org", "time.nist.gov");
+  Serial.println("\nWaiting for time");
+  while (!time(nullptr)) {
+    Serial.print(".");
+    delay(1000);
+  }
+
   // Firebase initialization
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 }
@@ -155,17 +163,33 @@ void sensorLedInterfaces() {
   shiftOutData(ledPattern);
 }
 
+bool reservation(){
+
+}
+
 void loop() {
   // Check WiFi Status
 
   if (WiFi.status() == WL_CONNECTED) {
     sensorLedInterfaces();
-  } else if (WiFi.status() == WL_CONNECTION_LOST) {
-    Serial.println(" WiFi connection is lost, reconnecting...");
-    ESP.restart();
-  } else if (WiFi.status() == WL_DISCONNECTED) {
-    Serial.println(" Wifi connection is disconnected, retrying....");
+  } else if (WiFi.status() == WL_CONNECTION_LOST || WiFi.status() == WL_DISCONNECTED) {
+    Serial.println(" WiFi connection is lost, reconnecting");
     ESP.restart();
   }
+
+  //Reservation checking returns 1 if true otherwise 0 for false
+  String reserveStalls [3] = {"stallA1", "stallA2", "stallA3"};
+
+  for (int i = 0; i < 3; i++) {
+        String setName = setResvStall(reserveStalls[i]);
+        if (setName == "nothing"){
+          Serial.println("not checking firebase as the time is out of schedule...");
+        }
+        else {
+          bool readResvData = resValidation(setName);
+          Serial.println(readResvData);
+        }
+     }
+
   delay(100);  // Fetching data from firebase every 0.1 seconds
 }
