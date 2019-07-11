@@ -4,8 +4,10 @@
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
 
+int monthInt;
 int hourInt;
 int minInt;
+struct tm * timeinfo;
 
 String getHour(int hours){
   // Convert integer hour to desired hour presentation
@@ -102,22 +104,25 @@ String getMonth(int monthNumb) {
   return month;
 }
 
-String setResvStall(String stallName) {
-  //Convert time_t data type to integer data type for both month and date
+void getTime(){
+  //get current time
   time_t rawtime;
-  struct tm * timeinfo;
   time (&rawtime);
   timeinfo = localtime(&rawtime);
-  String dateStr = String(timeinfo->tm_mday);
-  int monthInt = timeinfo->tm_mon;
+  monthInt = timeinfo->tm_mon;
+  hourInt = timeinfo->tm_hour;
+  minInt = timeinfo->tm_min;
+}
 
+String setResvStall(String stallName) {
+  //Convert time_t data type to integer data type for both month and date
+
+  String dateStr = String(timeinfo->tm_mday);
   String month = getMonth(monthInt);
   String date = month+dateStr;
   String setStall;
 
   //Error handling for not checking the firebase if it isn't reservation period
-  hourInt = timeinfo->tm_hour;
-  minInt = timeinfo->tm_min;
   String hour = getHour(hourInt);
 
   if (hour == "nothing") {
