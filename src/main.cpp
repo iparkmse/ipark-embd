@@ -11,9 +11,10 @@
 #include <FirebaseHttpClient.h>
 #include <FirebaseObject.h>
 #include "FirebaseCred.h"
+#include "ReservationCheck.h"
 
 // Include time library
-#include <Time.h>
+#include <time.h>
 
 // defines pins numbers
 // for ultrasonic sensors
@@ -163,8 +164,20 @@ void sensorLedInterfaces() {
   shiftOutData(ledPattern);
 }
 
-bool reservation(){
+bool checkReservation (String reserveStall) {
 
+  // Return 1 if true, 0 if false
+  String setName = setResvStall(reserveStall);
+  Serial.println(setName);
+  bool readResvData;
+
+  if (setName == "nothing"){
+      Serial.println("not checking firebase as the time is out of schedule...");
+  }
+  else {
+      readResvData = resValidation(setName);
+        }
+  return readResvData;
 }
 
 void loop() {
@@ -177,19 +190,7 @@ void loop() {
     ESP.restart();
   }
 
-  //Reservation checking returns 1 if true otherwise 0 for false
-  String reserveStalls [3] = {"stallA1", "stallA2", "stallA3"};
-
-  for (int i = 0; i < 3; i++) {
-        String setName = setResvStall(reserveStalls[i]);
-        if (setName == "nothing"){
-          Serial.println("not checking firebase as the time is out of schedule...");
-        }
-        else {
-          bool readResvData = resValidation(setName);
-          Serial.println(readResvData);
-        }
-     }
-
+  //Checking Reservation only for stall A1 - A3
+  checkReservation("stallA1");
   delay(100);  // Fetching data from firebase every 0.1 seconds
 }

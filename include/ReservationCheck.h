@@ -4,6 +4,9 @@
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
 
+int hourInt;
+int minInt;
+
 String getHour(int hours){
   // Convert integer hour to desired hour presentation
   String hour;
@@ -113,14 +116,15 @@ String setResvStall(String stallName) {
   String setStall;
 
   //Error handling for not checking the firebase if it isn't reservation period
-  int hourInt = timeinfo->tm_hour;
+  hourInt = timeinfo->tm_hour;
+  minInt = timeinfo->tm_min;
   String hour = getHour(hourInt);
 
   if (hour == "nothing") {
     setStall = "nothing";
   }
   else {
-    setStall ="reservation/"+date+"/"+hour+"/validated/";
+    setStall ="reservation/"+date+"/"+stallName+"/"+hour+"/validated/";
   }
 
   //Print actual current time
@@ -132,24 +136,4 @@ bool resValidation(String stallName) {
   //Get validation string data
   bool stallStatus = Firebase.getBool(stallName);
   return stallStatus;
-}
-
-void checkReservation (){
-  String reserveStalls [3] = {"stallA1", "stallA2", "stallA3"};
-  //String reserveTime [12] = {"a7","b8","c9","d10","e11","f12","g13","h14","i15","j16","k17","l18"};
-  for (int i = 0; i < 3; i++) {
-        String setName = setResvStall(reserveStalls[i]);
-        if (setName == "nothing"){
-          Serial.println("not checking firebase as the time is out of schedule...");
-        }
-        else {
-          bool readResvData = resValidation(setName);
-          Serial.println(readResvData);
-        }
-     }
-}
-
-void loop() {
-  checkReservation();
-  delay(600);
 }
