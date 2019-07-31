@@ -13,7 +13,7 @@ uint8_t latchPin = 5;  // D1
 
 // defines variables
 uint8_t minDistance = 0;  // minimum sensing distance
-uint8_t maxDistance = 5;  // maximum sensing distance
+uint8_t maxDistance = 10;  // maximum sensing distance
 
 String databaseLed[] = {"stallA1", "stallA2", "stallA3", "stallA4", "stallA5",
                         "stallB1", "stallB2", "stallB3", "stallB4", "stallB5"};
@@ -79,6 +79,9 @@ int ultraSensing(uint16_t trigPin) {
 uint16_t turnLedRed(int distance, int n, String status) {
   // function to turn led colour to red and set status
   uint16_t ledRed = 0x00;
+  // if (n < 3) {
+  //     writingData(databaseLed[n], "reserved");
+  // }
   if (distance > minDistance && distance < maxDistance) {
     ledRed = (long)(1)<<(n);  // turn led to red
     if (status == "vacant") {
@@ -102,12 +105,17 @@ uint16_t turnLedRed(int distance, int n, String status) {
       else if (expiration == 2) {
         writingData(databaseLed[n], "expiring");
       }
-      else if (n <= 3 && checkReservation(databaseLed[n]) == false) {
+      else if (n < 3 && checkReservation(databaseLed[n]) == false) {
         writingData(databaseLed[n], "violated");
       }
     }
   } else if (distance > maxDistance && status == "occupied") {
-    writingData(databaseLed[n], "vacant");
+      if (n < 3) {
+        writingData(databaseLed[n], "reserved");
+      }
+      else {
+        writingData(databaseLed[n], "vacant");
+      }
   }
   return ledRed;
 }
@@ -118,13 +126,18 @@ uint16_t forViolation(int distance, int n, String status) {
  if (distance > minDistance && distance < maxDistance) {
    if (status == "violated") {
       ledViolation = (long)(1)<<(n);  // blink led
-      if (n <= 3 && checkReservation(databaseLed[n]) == true) {
+      if (n < 3 && checkReservation(databaseLed[n]) == true) {
         writingData(databaseLed[n], "occupied");
         setExpiration(n);
       }
    }
  } else if (distance > maxDistance && status == "violated") {
-   writingData(databaseLed[n], "vacant");
+     if (n < 3) {
+      writingData(databaseLed[n], "reserved");
+  }
+  else {
+      writingData(databaseLed[n], "vacant");
+  }
  }
   return ledViolation;
 }
@@ -138,7 +151,7 @@ uint16_t forExpiring(int distance, int n, String status) {
       if (checkExpiration(n) == 1) {
         writingData(databaseLed[n], "violated");
       }
-      else if (n <= 3 && checkReservation(databaseLed[n]) == false) {
+      else if (n < 3 && checkReservation(databaseLed[n]) == false) {
           writingData(databaseLed[n], "violated");
       }
    }
